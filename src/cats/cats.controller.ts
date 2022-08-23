@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Ip,
   Param,
   Post,
@@ -17,9 +18,11 @@ export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @Get()
-  findAll(@Req() req: Request, @Res() res: Response) {
+  findAll(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const data = this.catsService.findAll();
-    res.json(data);
+    res.status(HttpStatus.OK);
+
+    return data;
   }
 
   @Get('/:id')
