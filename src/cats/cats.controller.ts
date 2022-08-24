@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpStatus,
   Ip,
@@ -8,12 +9,15 @@ import {
   Post,
   Req,
   Res,
+  UseFilters,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './create-cat-dto';
 import { Request, Response } from 'express';
+import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
 
 @Controller('cats')
+// @UseFilters(new HttpExceptionFilter()) //filter 주입
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
