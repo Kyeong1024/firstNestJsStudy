@@ -43,9 +43,9 @@ export class CatsController {
 
   @Post()
   create(
-    @Req() req: Request,
     @Res() res: Response,
-    @Body(CreateValidationPipe) body: CreateCatDto,
+    @Req() req: Request,
+    @Body() body: CreateCatDto,
   ) {
     /*
       {
