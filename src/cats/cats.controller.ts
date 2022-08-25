@@ -6,17 +6,24 @@ import {
   HttpStatus,
   Ip,
   Param,
+  ParseIntPipe,
   Post,
   Req,
   Res,
   UseFilters,
+  UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { CreateCatDto } from './create-cat-dto';
 import { Request, Response } from 'express';
 import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
+import { PositivePipe } from 'src/common/pipes/validation.pipe';
+import { SuccessInterceptor } from 'src/common/interceptor/success.interceptor';
+import { CreateCatDto } from './create-cat.dto';
+import { CreateValidationPipe } from 'src/common/pipes/create-validation.pipe';
 
 @Controller('cats')
+@UseInterceptors(SuccessInterceptor)
 // @UseFilters(new HttpExceptionFilter()) //filter 주입
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
@@ -30,15 +37,15 @@ export class CatsController {
   }
 
   @Get('/:id')
-  findOne(@Param('id') id: string, @Ip() ip) {
-    console.log({ id, ip });
+  findOne(@Param('id', PositivePipe) id: number, @Ip() ip) {
+    console.log({ ip });
   }
 
   @Post()
   create(
     @Req() req: Request,
     @Res() res: Response,
-    @Body() createCatDto: CreateCatDto,
+    @Body(CreateValidationPipe) body: CreateCatDto,
   ) {
     /*
       {
@@ -46,7 +53,8 @@ export class CatsController {
         age: number
       }
     */
+    // console.log({ body });
 
-    this.catsService.create(createCatDto);
+    this.catsService.create(body);
   }
 }
